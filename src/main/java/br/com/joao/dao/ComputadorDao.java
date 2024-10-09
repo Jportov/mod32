@@ -1,33 +1,37 @@
 package br.com.joao.dao;
 
+/**
+ * 
+ */
+
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import br.com.joao.domain.Curso;
+import br.com.joao.domain.Computador;
 
 /**
  * @author rodrigo.pires
  *
  */
-public class CursoDao implements ICursoDao {
+public class ComputadorDao implements IComputadorDao {
 
 	@Override
-	public Curso cadastrar(Curso curso) {
-		
+	public Computador cadastrar(Computador computador) {
 		EntityManagerFactory entityManagerFactory = 
 				Persistence.createEntityManagerFactory("ExemploJPA");
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		
 		entityManager.getTransaction().begin();
-		entityManager.persist(curso);
+		entityManager.persist(computador);
 		entityManager.getTransaction().commit();
 		 
 		entityManager.close();
 		entityManagerFactory.close();
 		
 		
-		return curso;
+		return computador;
 	}
 
 }

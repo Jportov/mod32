@@ -11,7 +11,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import br.com.joao.domain.Produto;
-import br.com.joao.domain.Produto;
 
 public class ProdutoDao implements IProdutoDao{
 

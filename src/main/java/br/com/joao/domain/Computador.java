@@ -1,8 +1,8 @@
-/**
- * 
- */
 package br.com.joao.domain;
 
+
+
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -10,8 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -20,26 +19,27 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "TB_CURSO")
-public class Curso {
+@Table(name = "TB_COMPUTADOR")
+public class Computador {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="curso_seq")
-	@SequenceGenerator(name="curso_seq", sequenceName="sq_curso", initialValue = 1, allocationSize = 1)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="comp_seq")
+	@SequenceGenerator(name="comp_seq", sequenceName="sq_computador", initialValue = 1, allocationSize = 1)
 	private Long id;
 	
 	@Column(name = "CODIGO", length = 10, nullable = false, unique = true)
 	private String codigo;
 	
-	@Column(name = "NOME", length = 50, nullable = false)
-	private String nome;
-	
-	@Column(name = "DESCRICAO", length = 100, nullable = false)
+	@Column(name = "DESCRICAO", length = 50, nullable = false)
 	private String descricao;
 	
-	@OneToMany(mappedBy = "curso")
-	private List<Matricula> matriculas;
+	@ManyToMany(mappedBy = "computadores")
+	private List<Aluno> alunos;
 	
+	public Computador() {
+		this.alunos = new ArrayList<>();
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -56,14 +56,6 @@ public class Curso {
 		this.codigo = codigo;
 	}
 
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
 	public String getDescricao() {
 		return descricao;
 	}
@@ -72,13 +64,16 @@ public class Curso {
 		this.descricao = descricao;
 	}
 
-	public List<Matricula> getMatriculas() {
-		return matriculas;
+	public List<Aluno> getAlunos() {
+		return alunos;
 	}
 
-	public void setMatriculas(List<Matricula> matriculas) {
-		this.matriculas = matriculas;
+	public void setAlunos(List<Aluno> alunos) {
+		this.alunos = alunos;
 	}
-
+	
+	public void add(Aluno aluno) {
+		this.alunos.add(aluno);
+	}
 	
 }

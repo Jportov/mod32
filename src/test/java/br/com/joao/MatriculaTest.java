@@ -1,18 +1,26 @@
+
+/**
+ * 
+ */
 package br.com.joao;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.time.Instant;
-import java.util.List;
 
-import org.junit.After;
 import org.junit.Test;
 
+import br.com.joao.dao.AlunoDao;
+import br.com.joao.dao.ComputadorDao;
 import br.com.joao.dao.CursoDao;
+import br.com.joao.dao.IAlunoDao;
+import br.com.joao.dao.IComputadorDao;
 import br.com.joao.dao.ICursoDao;
 import br.com.joao.dao.IMatriculaDao;
 import br.com.joao.dao.MatriculaDao;
+import br.com.joao.domain.Aluno;
+import br.com.joao.domain.Computador;
 import br.com.joao.domain.Curso;
 import br.com.joao.domain.Matricula;
 
@@ -26,111 +34,66 @@ public class MatriculaTest {
 	
 	private ICursoDao cursoDao;
 	
+	private IAlunoDao alunoDao;
+	
+	private IComputadorDao computadorDao;
+	
 	public MatriculaTest() {
 		matriculaDao = new MatriculaDao();
 		cursoDao = new CursoDao();
-	}
-	
-	@After
-	public void end() {
-		List<Matricula> list = matriculaDao.buscarTodos();
-		list.forEach(mat -> matriculaDao.excluir(mat));
-		
-		List<Curso> listCursos = cursoDao.buscarTodos();
-		listCursos.forEach(cur -> cursoDao.excluir(cur));
+		alunoDao = new AlunoDao();
+		computadorDao = new ComputadorDao();
 	}
 
 	@Test
 	public void cadastrar() {
 		Curso curso = criarCurso("A1");
+		Aluno aluno = criarAluno("A1");
+		
 		Matricula mat = new Matricula();
 		mat.setCodigo("A1");
 		mat.setDataMatricula(Instant.now());
 		mat.setStatus("ATIVA");
 		mat.setValor(2000d);
 		mat.setCurso(curso);
-		mat = matriculaDao.cadastrar(mat);
+		mat.setAluno(aluno);
 		
-		assertNotNull(mat);
-		assertNotNull(mat.getId());
-	}
-	
-	@Test
-	public void pesquisarPorCurso() {
-		Curso curso = criarCurso("A1");
-		Matricula mat = new Matricula();
-		mat.setCodigo("A1");
-		mat.setDataMatricula(Instant.now());
-		mat.setStatus("ATIVA");
-		mat.setValor(2000d);
-		mat.setCurso(curso);
+		aluno.setMatricula(mat);
 		mat = matriculaDao.cadastrar(mat);
 		
 		assertNotNull(mat);
 		assertNotNull(mat.getId());
 		
-		Matricula matricBD = matriculaDao.buscarPorCurso(curso);
-		assertNotNull(matricBD);
-		assertEquals(mat.getId(), matricBD.getId());
+		Matricula matBD = matriculaDao.buscarPorCodigoCurso(mat.getCodigo());
+		assertNotNull(matBD);
+		assertEquals(mat.getId(), matBD.getId());
+		
+		Matricula matBDObj = matriculaDao.buscarPorCurso(curso);
+		assertNotNull(matBDObj);
+		assertEquals(mat.getId(), matBDObj.getId());
 	}
 	
-	@Test
-	public void pesquisarPorCodigoCurso() {
-		Curso curso = criarCurso("A1");
-		Matricula mat = new Matricula();
-		mat.setCodigo("A1");
-		mat.setDataMatricula(Instant.now());
-		mat.setStatus("ATIVA");
-		mat.setValor(2000d);
-		mat.setCurso(curso);
-		mat = matriculaDao.cadastrar(mat);
-		
-		assertNotNull(mat);
-		assertNotNull(mat.getId());
-		
-		Matricula matricBD = matriculaDao.buscarPorCodigoCurso(curso.getCodigo());
-		assertNotNull(matricBD);
-		assertEquals(mat.getId(), matricBD.getId());
+	private Computador criarComputador(String codigo) {
+		Computador comp = new Computador();
+		comp.setCodigo(codigo);
+		comp.setDescricao("Comp 1");
+		return comp;
+		//return computadorDao.cadastrar(comp);
 	}
-	
-	@Test
-	public void pesquisarPorCodigoCursoCriteria() {
-		Curso curso = criarCurso("A1");
-		Matricula mat = new Matricula();
-		mat.setCodigo("A1");
-		mat.setDataMatricula(Instant.now());
-		mat.setStatus("ATIVA");
-		mat.setValor(2000d);
-		mat.setCurso(curso);
-		mat = matriculaDao.cadastrar(mat);
-		
-		assertNotNull(mat);
-		assertNotNull(mat.getId());
-		
-		Matricula matricBD = matriculaDao.buscarPorCodigoCursoCriteria(curso.getCodigo());
-		assertNotNull(matricBD);
-		assertEquals(mat.getId(), matricBD.getId());
+
+	private Aluno criarAluno(String codigo) {
+		Computador comp = criarComputador("A1");
+		Computador comp2 = criarComputador("A2");
+		Aluno aluno = new Aluno();
+		aluno.setCodigo(codigo);
+		aluno.setNome("Rodrigo");
+		aluno.add(comp);
+		aluno.add(comp2);
+		//comp.add(aluno);
+		//comp2.add(aluno);
+		return alunoDao.cadastrar(aluno);
 	}
-	
-	@Test
-	public void pesquisarPorCursoCriteria() {
-		Curso curso = criarCurso("A1");
-		Matricula mat = new Matricula();
-		mat.setCodigo("A1");
-		mat.setDataMatricula(Instant.now());
-		mat.setStatus("ATIVA");
-		mat.setValor(2000d);
-		mat.setCurso(curso);
-		mat = matriculaDao.cadastrar(mat);
-		
-		assertNotNull(mat);
-		assertNotNull(mat.getId());
-		
-		Matricula matricBD = matriculaDao.buscarPorCursoCriteria(curso);
-		assertNotNull(matricBD);
-		assertEquals(mat.getId(), matricBD.getId());
-	}
-	
+
 	private Curso criarCurso(String codigo) {
 		Curso curso = new Curso();
 		curso.setCodigo(codigo);

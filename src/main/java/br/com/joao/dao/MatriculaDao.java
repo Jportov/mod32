@@ -1,7 +1,5 @@
 package br.com.joao.dao;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -11,8 +9,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
-
-import org.hibernate.Criteria;
 
 import br.com.joao.domain.Curso;
 import br.com.joao.domain.Matricula;
@@ -83,7 +79,7 @@ public class MatriculaDao implements IMatriculaDao {
 		
 		return matricula;
 	}
-
+	
 	@Override
 	public Matricula buscarPorCodigoCursoCriteria(String codigoCurso) {
 		EntityManagerFactory entityManagerFactory = 
@@ -128,42 +124,6 @@ public class MatriculaDao implements IMatriculaDao {
 		entityManagerFactory.close();
 		
 		return matricula;
-	}
-
-	@Override
-	public List<Matricula> buscarTodos() {
-		EntityManagerFactory entityManagerFactory = 
-				Persistence.createEntityManagerFactory("ExemploJPA");
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
-		
-		
-		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<Matricula> query = builder.createQuery(Matricula.class);
-		Root<Matricula> root = query.from(Matricula.class);
-		query.select(root);
-		
-		TypedQuery<Matricula> tpQuery = 
-				entityManager.createQuery(query);
-		List<Matricula> list = tpQuery.getResultList();  
-		
-		entityManager.close();
-		entityManagerFactory.close();
-		return list;
-	}
-
-	@Override
-	public void excluir(Matricula matricula) {
-		EntityManagerFactory entityManagerFactory = 
-				Persistence.createEntityManagerFactory("ExemploJPA");
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
-		
-		entityManager.getTransaction().begin();
-		matricula = entityManager.merge(matricula);
-		entityManager.remove(matricula);
-		entityManager.getTransaction().commit();
-		 
-		entityManager.close();
-		entityManagerFactory.close();
 	}
 
 }
